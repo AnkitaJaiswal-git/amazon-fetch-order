@@ -16,39 +16,27 @@ pipeline {
             }
         }
 
-
-         stage('Clone Repo') {
+        stage('Clone Repo') {
             steps {
                 git url: 'https://github.com/AnkitaJaiswal-git/amazon-fetch-order.git', branch: 'main'
             }
         }
+        
 
-         stage('Set Up Python Virtual Environment') {
+        stage('Set Up Python Virtual Environment') {
             steps {
                 sh '''
                     python3 -m venv amazonenv
-                    . amazonenv/bin/activate
-                    amazonenv/bin/pip install selenium
+                    amazonenv/bin/pip install --upgrade pip
+                    amazonenv/bin/pip install -r requirements.txt
                 '''
             }
         }
 
-        stage('Install ChromeDriver') {
-            steps {
-                sh '''
-                    wget -q https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip
-                    unzip -o chromedriver_linux64.zip
-                    chmod +x chromedriver
-                    sudo mv chromedriver /usr/local/bin/
-               '''
-           }
-       }
-
         stage('Run Order Fetcher') {
             steps {
                 sh '''
-                    . amazonenv/bin/activate
-                    amazonenv/bin/python3 fetch_amazon_orders.py "$AMAZON_EMAIL" "$AMAZON_PASSWORD"
+                    amazonenv/bin/python fetch_amazon_orders.py "$AMAZON_EMAIL" "$AMAZON_PASSWORD"
                 '''
             }
         }
