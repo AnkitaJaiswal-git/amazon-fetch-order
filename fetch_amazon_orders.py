@@ -1,6 +1,3 @@
-stage('Write Script') {
-    steps {
-        writeFile file: 'fetch_amazon_orders.py', text: '''#!/usr/bin/env python3
 import sys
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -29,12 +26,9 @@ driver.get("https://www.amazon.com/gp/your-account/order-history")
 time.sleep(5)
 
 print("Scraping orders...")
-orders = driver.find_elements(By.CLASS_NAME, 'order')
+orders = driver.find_elements(By.CLASS_NAME, 'order')  # May need adjustment
 for order in orders:
     print(order.text)
     print('---')
 
 driver.quit()
-'''
-    }
-}
