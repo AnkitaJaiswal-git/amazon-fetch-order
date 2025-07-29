@@ -23,18 +23,6 @@ pipeline {
             }
         }
 
-
-
-        stage('Set Up Python Virtual Environment') {
-            steps {
-                sh '''
-                    python3 -m venv amazonenv
-                    source amazonenv/bin/activate
-                    amazonenv/bin/pip install -r requirements.txt
-                '''
-            }
-        }
-
         stage('Install ChromeDriver') {
             steps {
                 sh '''
@@ -49,7 +37,7 @@ pipeline {
         stage('Run Order Fetcher') {
             steps {
                 sh '''
-                    source amazonenv/bin/activate
+                    . amazonenv/bin/activate
                     amazonenv/bin/python3 fetch_amazon_orders.py "$AMAZON_EMAIL" "$AMAZON_PASSWORD"
                 '''
             }
