@@ -2,28 +2,45 @@ pipeline {
     agent any
 
     environment {
-        AMAZON_EMAIL = credentials('amazon-email')        // Store in Jenkins credentials
-        AMAZON_PASSWORD = credentials('amazon-password')  // Store securely
+        AMAZON_EMAIL = credentials('amazon-email')
+        AMAZON_PASSWORD = credentials('amazon-password')
     }
 
     stages {
-        stage('Install Dependencies') {
+        stage('Install Python') {
             steps {
                 sh '''
-                    pip install selenium
-                    wget https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip
-                    unzip chromedriver_linux64.zip
-                    chmod +x chromedriver
-                    mv chromedriver /usr/local/bin/
+                    which python3 || sudo apt-get update && sudo apt-get install -y python3 python3-pip
                 '''
             }
         }
 
-        stage('Fetch Amazon Orders') {
+        stage('Clone Repo') {
+            steps {
+                git url: 'https://github.com/your-username/amazon-order-fetcher.git', branch: 'main'
+            }
+        }
+
+        stage('Install Python Dependencies') {
+            steps {
+                sh 'pip3 install -r requirements.txt'
+            }
+        }
+
+        stage('Install ChromeDriver') {
             steps {
                 sh '''
-                    python fetch_amazon_orders.py "$AMAZON_EMAIL" "$AMAZON_PASSWORD"
+                    wget https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip
+                    unzip chromedriver_linux64.zip
+                    chmod +x chromedriver
+                    sudo mv chromedriver /usr/local/bin/
                 '''
+            }
+        }
+
+        stage('Fetch Orders from Amazon') {
+            steps {
+                sh 'python3 fetch_amazon_orders.py "$AMAZON_EMAIL" "$AMAZON_PASSWORD"'
             }
         }
     }
