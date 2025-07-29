@@ -23,6 +23,16 @@ pipeline {
             }
         }
 
+         stage('Set Up Python Virtual Environment') {
+            steps {
+                sh '''
+                    python3 -m venv amazonenv
+                    . amazonenv/bin/activate
+                    amazonenv/bin/pip install selenium
+                '''
+            }
+        }
+
         stage('Install ChromeDriver') {
             steps {
                 sh '''
