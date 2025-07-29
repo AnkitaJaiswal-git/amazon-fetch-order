@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'MandS' } 
+    agent any
 
     environment {
         AMAZON_EMAIL = credentials('amazon-email')
@@ -7,23 +7,31 @@ pipeline {
     }
 
     stages {
-        stage('Install Python') {
+        stage('Install System Packages') {
             steps {
                 sh '''
-                    which python3 || sudo apt-get update && sudo apt-get install -y python3 python3-pip
+                    sudo apt-get update
+                    sudo apt-get install -y python3-venv python3-full wget unzip curl
                 '''
             }
         }
 
-        stage('Clone Repo') {
+
+         stage('Clone Repo') {
             steps {
                 git url: 'https://github.com/AnkitaJaiswal-git/amazon-fetch-order.git', branch: 'main'
             }
         }
 
-        stage('Install Python Dependencies') {
+
+
+        stage('Set Up Python Virtual Environment') {
             steps {
-                sh 'pip3 install -r requirements.txt'
+                sh '''
+                    python3 -m venv amazonenv
+                    source amazonenv/bin/activate
+                    amazonenv/bin/pip install -r requirements.txt
+                '''
             }
         }
 
@@ -38,9 +46,12 @@ pipeline {
             }
         }
 
-        stage('Fetch Orders from Amazon') {
+        stage('Run Order Fetcher') {
             steps {
-                sh 'python3 fetch_amazon_orders.py "$AMAZON_EMAIL" "$AMAZON_PASSWORD"'
+                sh '''
+                    source amazonenv/bin/activate
+                    amazonenv/bin/python3 fetch_amazon_orders.py "$AMAZON_EMAIL" "$AMAZON_PASSWORD"
+                '''
             }
         }
     }
