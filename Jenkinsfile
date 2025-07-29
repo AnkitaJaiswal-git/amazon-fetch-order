@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { label 'MandS' } 
 
     environment {
         AMAZON_EMAIL = credentials('amazon-email')
