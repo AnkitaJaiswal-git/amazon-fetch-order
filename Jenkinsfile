@@ -36,13 +36,13 @@ pipeline {
         stage('Install ChromeDriver') {
             steps {
                 sh '''
-                    wget https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip
-                    unzip chromedriver_linux64.zip
+                    wget -q https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip
+                    unzip -o chromedriver_linux64.zip
                     chmod +x chromedriver
                     sudo mv chromedriver /usr/local/bin/
-                '''
-            }
-        }
+               '''
+           }
+       }
 
         stage('Run Order Fetcher') {
             steps {
