@@ -21,6 +21,7 @@ options = Options()
 # options.add_argument("--headless")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
+options.add_argument("--remote-debugging-port=9222")
 
 # Set Chrome binary location — adjust if using Google Chrome instead of Chromium
 options.binary_location = "/usr/bin/chromium-browser"
@@ -28,6 +29,10 @@ options.binary_location = "/usr/bin/chromium-browser"
 # Use a unique temporary user data directory to avoid session errors
 user_data_dir = tempfile.mkdtemp()
 options.add_argument(f"--user-data-dir={user_data_dir}")
+
+# Create a unique temp profile directory
+profile_path = tempfile.mkdtemp(prefix="selenium-profile-")
+options.add_argument(f"--user-data-dir={profile_path}")
 
 # Start Chrome driver
 driver = webdriver.Chrome(
