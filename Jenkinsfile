@@ -17,7 +17,7 @@ pipeline {
 
         stage('Clone Repo') {
             steps {
-                git url: 'https://github.com/your-username/amazon-order-fetcher.git', branch: 'main'
+                git url: 'https://github.com/AnkitaJaiswal-git/amazon-fetch-order.git', branch: 'main'
             }
         }
 
